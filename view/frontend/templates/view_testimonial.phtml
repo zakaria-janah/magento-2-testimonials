@@ -1,0 +1,161 @@
+<?php
+$helper = $this->helper(\Egio\Testimonials\Helper\General::class);
+$mediaUrl = $helper->getMediaUrl();
+$mediaPath = $helper->getMediaPath();
+
+if ($helper->getConfigData()) { ?>
+<div class="egio-testimonials-block">
+
+    <div class="egio-testimonial-page-title">
+        <h1><?= $block->escapeHtml(__('Testimonials')); ?></h1>
+    </div>
+
+    <div class="cms-block-content">
+        <form action="<?= $block->escapeUrl($block->getUrl('testimonials/addnew/add', ["_secure" => $this->getRequest()->isSecure()])); ?>"
+            enctype="multipart/form-data"
+            method="post"
+            class="testimonial-form"
+            id="testimonial-form"
+            data-mage-init='{"validation": {"errorClass": "mage-error"}}'
+            data-hasrequired="<?= $block->escapeHtml(__('* Required Fields')) ?>">
+
+            <fieldset class="fieldset">
+
+                <div class="field required">
+                    <label class="label egio-testimonial-label"><?= $block->escapeHtml(__('Title')); ?></label>
+                    <input type="text" name="title" id="testimonial-title" title="<?= $block->escapeHtml(__('Title')) ?>"
+                           data-validate="{required:true}" class="validate-length maximum-length-60">
+                </div>
+
+                <div class="field image">
+                    <label class="label" for="form-image-doc"><span><?= __('Image') ?></span></label>
+                    <div class="control">
+                        <input name="formimagedoc" id="form-image-doc" class="input-text" type="file" title="<?= __('Image') ?>" accept=".doc,.docx,image/jpg,image/jpeg" data-validate="{required:false}"/>
+                        <br/><span class="note"> <?= __('Supports Extension: jpg, jpeg, doc, docx') ?> </span>
+                        <br/><span class="note"> <?= __('Max File Size: 1 Mo') ?> </span>
+                    </div>
+                </div>
+
+                <div class="field required">
+                    <label class="label egio-testimonial-label"><?= $block->escapeHtml(__('Message')); ?></label>
+                    <textarea class="validate-length maximum-length-300" rows="4" name="message" id="testimonial" title="<?= $block->escapeHtml(__('Message')) ?>"
+                              data-validate="{required:true,'validate-length':true}" ></textarea>
+                </div>
+
+            </fieldset>
+            <div class="actions">
+                <button class="action primary" title="<?= $block->escapeHtml(__('Add New Testimonial')); ?>" type="submit">
+                    <span><?= $block->escapeHtml(__('Add New Testimonial')); ?></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <?php
+    $data = $block->getTestimonials();
+
+    if (count($data) > 0) {
+        ?>
+
+        <div class="egio-testimonials-block">
+            <div class="container">
+                <div class="egio-testimonials-content-outer-no">
+                    <span><?= __('Here\'s what others say:');?></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="egio-testimonials" class="testimonials-data">
+
+            <?php foreach ($data as $item) { ?>
+
+                <div class="testimonial-item">
+                    <div class="testimonial-img-title">
+                        <?php $fileSource = ($item->getImageDoc()) ? $mediaUrl . $item->getImageDoc() : $block->escapeUrl($this->getViewFileUrl('Egio_Testimonials::images/document.png')); ?>
+
+                        <?php
+                            $docImgUrl = $block->escapeUrl($this->getViewFileUrl('Egio_Testimonials::images/document.png'));
+                            $fileUrl = $mediaUrl . $item->getImageDoc();
+                            $filePath = $mediaPath . $item->getImageDoc();
+
+                            $mystring = '';
+                            if(is_file($filePath)) {
+                                $mystring = mime_content_type($filePath);
+                            }
+                            $findme   = 'image';
+                            $pos = strpos($mystring, $findme);
+
+                            if ($pos !== false) {
+                                $isImage = true;
+                            } else {
+                                $isImage = false;
+                            }
+                        ?>
+
+                        <img class="testimonial-img" src="<?= ($isImage) ? $fileUrl : $docImgUrl; ?>" alt="Testimonial Image">
+                        <span class="testimonial-title"><?= $item->getTitle(); ?></span>
+                    </div>
+
+                    <div class="testimonial-content">
+                        <p class="testimonial-message"><?= $item->getMessage(); ?></p>
+                    </div>
+                </div>
+
+            <?php } ?>
+
+        </div>
+
+        <?php } else { ?>
+        <div class="egio-testimonials-block">
+            <div class="container">
+                <div class="egio-testimonials-content-outer-no">
+                    <span><?= __('No Testimonial Found');?></span>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+
+<?php } ?>
+
+
+<script type="text/javascript">
+    require([
+        'jquery',
+        'slick'
+    ], function($) {
+
+        $('#egio-testimonials').slick({
+            dots: true,
+            infinite: false,
+            speed: 300,
+            slidesToShow: 4,
+            slidesToScroll: 4,
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        infinite: true,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+
+    });
+</script>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="Egio\Testimonials\Model\ResourceModel\Module\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">egio_testimonials</argument>
+            <argument name="resourceModel" xsi:type="string">Egio\Testimonials\Model\ResourceModel\Module</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="egio_testimonials_grid_data_source" xsi:type="string">Egio\Testimonials\Model\ResourceModel\Module\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Egio\Testimonials\ImageUploader" type="Magento\Catalog\Model\ImageUploader">
+        <arguments>
+            <argument name="baseTmpPath" xsi:type="string">testimonial/tmp</argument>
+            <argument name="basePath" xsi:type="string">testimonial</argument>
+            <argument name="allowedExtensions" xsi:type="array">
+                <item name="jpg" xsi:type="string">jpg</item>
+                <item name="jpeg" xsi:type="string">jpeg</item>
+                <item name="doc" xsi:type="string">doc</item>
+                <item name="docx" xsi:type="string">docx</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Egio\Testimonials\Controller\Adminhtml\Manage\Upload">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Egio\Testimonials\ImageUploader</argument>
+        </arguments>
+    </type>
+    <type name="Egio\Testimonials\Controller\Adminhtml\Manage\Save">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Egio\Testimonials\ImageUploader</argument>
+        </arguments>
+    </type>
+
+</config>
